@@ -2,7 +2,7 @@ package com.eungaehospital.file;
 
 import java.io.File;
 
-import com.eungaehospital.hospital.domain.Hospital;
+import com.eungaehospital.appointment.domain.AppointmentDocument;
 import com.eungaehospital.hospital.domain.HospitalImage;
 
 import lombok.AllArgsConstructor;
@@ -21,10 +21,16 @@ public class ResultFileStore {
         return folderPath + File.separator + storeFileName;
     }
 
-    public static HospitalImage toEntity(ResultFileStore resultFileStore){
+    public static HospitalImage toHospitalImage(ResultFileStore resultFileStore){
         return HospitalImage.builder()
             .originFileName(resultFileStore.getOriginalFileName())
             .storeFileName(resultFileStore.getStoreFileName())
             .build();
+    }
+
+    public static AppointmentDocument toAppointmentDocument(ResultFileStore resultFileStore){
+        return AppointmentDocument.builder()
+                .appointmentDocumentLoc(resultFileStore.getStoreFileName())
+                .build();
     }
 }

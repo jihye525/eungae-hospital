@@ -84,4 +84,8 @@ public class Appointment extends BaseEntity {
 	// join seq
 	@Setter
 	private Long reviewSeq;
+
+	public void addAppointmentDocument(AppointmentDocument appointmentDocument) {
+		appointmentDocuments.add(appointmentDocument);
+	}
 }

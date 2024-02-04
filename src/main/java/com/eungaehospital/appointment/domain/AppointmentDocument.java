@@ -9,14 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "appointment_document")
 public class AppointmentDocument extends BaseEntity {
@@ -32,4 +30,9 @@ public class AppointmentDocument extends BaseEntity {
 	private String appointmentDocumentLoc;
 
 	private String note;
+
+	public void setAppointment(Appointment appointment){
+		this.appointment = appointment;
+		appointment.addAppointmentDocument(this);
+	}
 }

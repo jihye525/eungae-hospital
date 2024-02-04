@@ -4,9 +4,6 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
-import com.eungaehospital.doctor.dto.DoctorResponseDto;
-import com.eungaehospital.doctor.repository.DoctorRepository;
-
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +84,7 @@ public class HospitalService {
 
 		if (!resultFileStores.isEmpty()) {
 			List<HospitalImage> newHospitalImageList = resultFileStores.stream()
-				.map(ResultFileStore::toEntity)
+				.map(ResultFileStore::toHospitalImage)
 				.toList();
 
 			newHospitalImageList.forEach(hospitalImage -> {

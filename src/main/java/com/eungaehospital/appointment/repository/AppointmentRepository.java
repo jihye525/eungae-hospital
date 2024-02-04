@@ -2,6 +2,7 @@ package com.eungaehospital.appointment.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,4 +39,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 			+ " and a.status = 'APPOINTMENT'"
 			+ " and a.deleteYN = 'N'")
 	List<Appointment> findAllByDoctorDoctorSeq(Long doctorSeq);
+
+
+	@Query("select  a from Appointment a" +
+			" where a.appointmentSeq = :appointmentSeq" +
+			" and a.deleteYN = 'N'")
+	Optional<Appointment> findByAppointmentSeq(@Param("appointmentSeq") Long appointmentSeq);
+
 }

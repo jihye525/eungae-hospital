@@ -1,12 +1,15 @@
 package com.eungaehospital.appointment.service;
 
 import com.eungaehospital.appointment.domain.Appointment;
+import com.eungaehospital.appointment.domain.AppointmentDocument;
 import com.eungaehospital.appointment.domain.AppointmentStatus;
 import com.eungaehospital.appointment.dto.AppointmentRequestDto;
 import com.eungaehospital.appointment.dto.AppointmentResponseDto;
+import com.eungaehospital.appointment.repository.AppointmentDocumentRepository;
 import com.eungaehospital.appointment.repository.AppointmentRepository;
 import com.eungaehospital.doctor.domain.Doctor;
 import com.eungaehospital.doctor.repository.DoctorRepository;
+import com.eungaehospital.file.ResultFileStore;
 import com.eungaehospital.hospital.domain.Hospital;
 import com.eungaehospital.hospital.repository.HospitalRepository;
 import com.eungaehospital.member.domain.Children;
@@ -17,11 +20,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class AppointmentService {
     private final DoctorRepository doctorRepository;
     private final MemberRepository memberRepository;
     private final ChildrenRepository childrenRepository;
+    private final AppointmentDocumentRepository appointmentDocumentRepository;
 
 
     @Transactional(readOnly = true)
@@ -89,5 +95,20 @@ public class AppointmentService {
         childrenRepository.save(children);
         Appointment appointment = AppointmentRequestDto.toEntity(requestDto, doctor, children, member, hospital);
         appointmentRepository.save(appointment);
+    }
+
+    @Transactional
+    public void attachAppointmentDocuments(Long appointmentSeq, List<ResultFileStore> appointmentDocuments) {
+        Appointment appointment = appointmentRepository.findByAppointmentSeq(appointmentSeq)
+                .orElseThrow(() -> new NoSuchElementException("cannot found appointment by appointmentSeq = {%d}".formatted(appointmentSeq)));
+
+        List<AppointmentDocument> appointmentDocumentList = appointmentDocuments.stream()
+                .map(ResultFileStore::toAppointmentDocument)
+                .toList();
+
+        appointmentDocumentList.forEach(document -> {
+            document.setAppointment(appointment);
+            appointmentDocumentRepository.save(document);
+        });
     }
 }
